@@ -1,491 +1,968 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sistema de Ventas Local</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
-  <style>
-    body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; color: #374151; }
-    .btn-primary { @apply bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md; }
-    .quantity-input { @apply w-16 border border-gray-300 rounded-md p-1 text-center focus:outline-none focus:ring-2 focus:ring-blue-500; }
-    /* Ajuste de altura del input de búsqueda directamente en la clase */
-    .search-input { @apply w-full border border-gray-300 rounded-md py-4 px-4; } 
-    .product-card { @apply bg-white p-4 rounded-lg shadow-md flex flex-col items-center text-center; }
-    .cart-table th, .cart-table td { @apply py-2 px-4 border-b border-gray-200 text-left; }
-    .cart-table th { @apply bg-gray-50 text-xs font-semibold uppercase tracking-wider text-gray-600; }
-    .invoice-summary { @apply mt-4 p-4 border-t border-gray-300 text-sm text-gray-700; }
-    .social-links { @apply mt-2 text-center; }
-
-    /* Estilos para impresión */
-    @media print {
-      /* Oculta la sección de búsqueda y productos */
-      main > section:first-child,
-      #searchInput,
-      #productList {
-        display: none !important;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Ventas Local</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f3f4f6;
+        color: #374151;
+      }
+      .btn-primary {
+        @apply bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md;
+      }
+      .quantity-input {
+        @apply w-16 border border-gray-300 rounded-md p-1 text-center focus:outline-none focus:ring-2 focus:ring-blue-500;
+      }
+      /* Ajuste de altura del input de búsqueda directamente en la clase */
+      .search-input {
+        @apply w-full border border-gray-300 rounded-md py-4 px-4;
+      }
+      .product-card {
+        @apply bg-white p-4 rounded-lg shadow-md flex flex-col items-center text-center;
+      }
+      .cart-table th,
+      .cart-table td {
+        @apply py-2 px-4 border-b border-gray-200 text-left;
+      }
+      .cart-table th {
+        @apply bg-gray-50 text-xs font-semibold uppercase tracking-wider text-gray-600;
+      }
+      .invoice-summary {
+        @apply mt-4 p-4 border-t border-gray-300 text-sm text-gray-700;
+      }
+      .social-links {
+        @apply mt-2 text-center;
       }
 
-      /* Oculta los botones de control para la impresión */
-      #checkoutBtn,
-      #clearCartBtn,
-      #generateDailyReportBtn,
-      #clearDailySalesBtn {
-        display: none !important;
-      }
+      /* Estilos para impresión */
+      @media print {
+        /* Oculta la sección de búsqueda y productos */
+        main > section:first-child,
+        #searchInput,
+        #productList {
+          display: none !important;
+        }
 
-      /* Asegura que el encabezado y el pie de página se muestren */
-      header, footer {
-        display: block !important;
-      }
+        /* Oculta los botones de control para la impresión */
+        #checkoutBtn,
+        #clearCartBtn,
+        #generateDailyReportBtn,
+        #clearDailySalesBtn {
+          display: none !important;
+        }
 
-      /* Ajusta el ancho de la sección de la factura para que ocupe todo el espacio */
-      main > aside {
-        width: 100% !important;
-        padding: 0;
-        box-shadow: none;
-      }
-    }
-  </style>
-</head>
-<body class="min-h-screen flex flex-col">
-  <header class="bg-blue-800 text-white p-4 shadow-lg">
-    <div class="container mx-auto flex justify-between items-center">
-      <h1 class="text-2xl font-bold">R&amp;F Productos Integrales</h1>
-      <p class="text-sm">Alma Rosa II, Santo Domingo Este | Tel: 809-592-7464</p>
-    </div>
-  </header>
-  <main class="flex-grow container mx-auto p-4 grid grid-cols-1 lg:grid-cols-3 gap-4">
-    <section class="lg:col-span-2">
+        /* Asegura que el encabezado y el pie de página se muestren */
+        header,
+        footer {
+          display: block !important;
+        }
 
-      <div class="cajero-container">
-        <label for="cajero" style="font-weight: bold;">Nombre del Cajero:</label>
-        <input type="text" id="cajero" placeholder="Nombre del cajero" style="padding: 5px; border: 1px solid #ccc; border-radius: 5px;">
+        /* Ajusta el ancho de la sección de la factura para que ocupe todo el espacio */
+        main > aside {
+          width: 100% !important;
+          padding: 0;
+          box-shadow: none;
+        }
+      }
+    </style>
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <header class="bg-blue-800 text-white p-4 shadow-lg">
+      <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-2xl font-bold">R&amp;F Productos Integrales</h1>
+        <p class="text-sm">
+          Alma Rosa II, Santo Domingo Este | Tel: 809-592-7464
+        </p>
       </div>
-      <br>
-
-      <div style="margin-bottom: 15px;">
-        <label for="customerName" style="font-weight: bold; display: block; margin-bottom: 5px;">Nombre del Cliente:</label>
-        <input type="text" id="customerName" placeholder="Nombre del cliente" style="padding: 5px; border: 1px solid #ccc; border-radius: 5px; width: 100%; margin-bottom: 5px;">
-
-        <label for="customerPhone" style="font-weight: bold; display: block; margin-bottom: 5px;">Teléfono del Cliente:</label>
-        <input type="text" id="customerPhone" placeholder="Teléfono del cliente" style="padding: 5px; border: 1px solid #ccc; border-radius: 5px; width: 100%; margin-bottom: 5px;">
-
-        <label for="customerAddress" style="font-weight: bold; display: block; margin-bottom: 5px;">Dirección del Cliente:</label>
-        <input type="text" id="customerAddress" placeholder="Dirección del cliente" style="padding: 5px; border: 1px solid #ccc; border-radius: 5px; width: 100%;">
-      </div>
-
-      <h2 class="text-xl font-semibold mb-4 text-blue-700">Tienda</h2>
-      <input type="text" id="searchInput" placeholder="Buscar productos..." class="search-input my-6"> 
-      <div id="productList" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+    </header>
+    <main
+      class="flex-grow container mx-auto p-4 grid grid-cols-1 lg:grid-cols-3 gap-4"
+    >
+      <section class="lg:col-span-2">
+        <div class="cajero-container">
+          <label for="cajero" style="font-weight: bold"
+            >Nombre del Cajero:</label
+          >
+          <input
+            type="text"
+            id="cajero"
+            placeholder="Nombre del cajero"
+            style="padding: 5px; border: 1px solid #ccc; border-radius: 5px"
+          />
         </div>
-    </section>
+        <br />
 
-    <aside class="lg:col-span-1 bg-white p-6 rounded-lg shadow-xl">
-      <h2 class="text-xl font-bold text-blue-700 mb-2 text-center">CONSUMIDOR FINAL</h2>
-      <table class="min-w-full cart-table mb-4">
-        <thead>
-          <tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Total</th><th></th></tr>
-        </thead>
-        <tbody id="cartBody"><tr><td colspan="5" class="text-center text-gray-500 py-4">El carrito está vacío.</td></tr></tbody>
-      </table>
+        <div style="margin-bottom: 15px">
+          <label
+            for="customerName"
+            style="font-weight: bold; display: block; margin-bottom: 5px"
+            >Nombre del Cliente:</label
+          >
+          <input
+            type="text"
+            id="customerName"
+            placeholder="Nombre del cliente"
+            style="
+              padding: 5px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+              width: 100%;
+              margin-bottom: 5px;
+            "
+          />
 
-      <hr class="my-4 border-gray-500">
+          <label
+            for="customerPhone"
+            style="font-weight: bold; display: block; margin-bottom: 5px"
+            >Teléfono del Cliente:</label
+          >
+          <input
+            type="text"
+            id="customerPhone"
+            placeholder="Teléfono del cliente"
+            style="
+              padding: 5px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+              width: 100%;
+              margin-bottom: 5px;
+            "
+          />
 
-      <div class="flex justify-between mb-2"><span>Subtotal:</span><span id="subtotal" class="font-semibold">$0.00</span></div>
-      <div class="flex justify-between mb-2"><span>Descuento (%):</span><input type="number" id="discountInput" class="quantity-input" min="0" max="100" value="0"></div>
-      <div class="flex justify-between mb-4 text-lg font-bold"><span>Total a Pagar:</span><span id="total">$0.00</span></div>
-
-      <hr class="my-4 border-gray-500">
-
-      <button id="checkoutBtn" class="btn-primary w-full mb-2" disabled>Procesar e Imprimir</button>
-      <button id="clearCartBtn" class="btn-primary w-full bg-red-600 hover:bg-red-700" disabled>Vaciar Carrito</button>
-
-      <button id="generateDailyReportBtn" class="btn-primary w-full bg-green-600 hover:bg-green-700 mt-2">Generar Reporte Diario</button>
-      <button id="clearDailySalesBtn" class="btn-primary w-full bg-orange-600 hover:bg-orange-700 mt-2">Borrar Datos Diarios</button>
-
-      <div class="text-center mt-4 font-semibold text-green-600">GRACIAS POR SU COMPRA</div>
-
-      <hr class="my-4 border-gray-500">
-
-      <div class="invoice-summary text-sm">
-        <p>Fecha: <span id="invoiceDate"></span></p>
-        <p>Factura N°: <span id="invoiceNumber"></span></p>
-        <p>Cantidad de Artículos: <span id="totalItems"></span></p>
-	      <p><strong>Cajero:</strong> <span id="cajeroFactura"></span></p>
-        <p><strong>Cliente:</strong> <span id="invoiceCustomerName"></span></p>
-        <p><strong>Teléfono:</strong> <span id="invoiceCustomerPhone"></span></p>
-        <p><strong>Dirección:</strong> <span id="invoiceCustomerAddress"></span></p>
-
-        <hr class="my-2">
-        <div class="social-links">
-	        <p>Email: productosintegralesryf@gmail.com</p>
-          <p>Síguenos: Facebook | @prointegrales | YouTube</p>
-          <p><a href="https://ryfproductosintegrales.com" target="_blank" class="text-blue-600">www.ryfproductosintegrales.com</a></p>
+          <label
+            for="customerAddress"
+            style="font-weight: bold; display: block; margin-bottom: 5px"
+            >Dirección del Cliente:</label
+          >
+          <input
+            type="text"
+            id="customerAddress"
+            placeholder="Dirección del cliente"
+            style="
+              padding: 5px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+              width: 100%;
+            "
+          />
         </div>
-      </div>
-    </aside>
-  </main>
-  <footer class="bg-gray-800 text-white p-4 text-center text-sm">
-    <p>&copy; 2025 R&amp;F Productos Integrales</p>
-  </footer>
 
-  <script>
-    const products = [
+        <h2 class="text-xl font-semibold mb-4 text-blue-700">Tienda</h2>
 
-{ name: "Aceite de ajonjoli (4 onzas)", precioDetalle: 400, precioMayor: 320 },
-{ name: "Aceite de Batana", precioDetalle: 1200, precioMayor: 1050 },
-{ name: "Aceite de coco (8 onzas)", precioDetalle: 400, precioMayor: 320 },
-{ name: "Aceite de coco medio galon", precioDetalle: 1200, precioMayor: 1020 },
-{ name: "Aceite de coco galon", precioDetalle: 1900, precioMayor: 1710 },
-{ name: "Aceite de copaiba (1 onza)", precioDetalle: 500, precioMayor: 400 },
-{ name: "Aceite de linaza (8 onzas)", precioDetalle: 500, precioMayor: 400 },
-{ name: "Aceite de oregano (1 onza)", precioDetalle: 950, precioMayor: 760 },
-{ name: "Aceite de Ricino (4 oz)", precioDetalle: 300, precioMayor: 240 },
-{ name: "Aceites Esenciales (10 ml)", precioDetalle: 800, precioMayor: 640 },
-{ name: "Adipo-CF (90 capsulas)", precioDetalle: 500, precioMayor: 400 },
-{ name: "Adipofin (30 capsulas)", precioDetalle: 600, precioMayor: 480 },
-{ name: "Alcachofa (2 onzas)", precioDetalle: 250, precioMayor: 200 },
-{ name: "Alcachofa (60 cap)", precioDetalle: 600, precioMayor: 480 },
-{ name: "Almendras (227 gramos)", precioDetalle: 300, precioMayor: 240 },
-{ name: "Amargo sueco (8 onzas)", precioDetalle: 1500, precioMayor: 1200 },
-{ name: "Anís comino (2 onzas)", precioDetalle: 50, precioMayor: 40 },
-{ name: "Ashwagandha (60 cap)", precioDetalle: 600, precioMayor: 480 },
-{ name: "Ayurcolon (3,25 onzas)", precioDetalle: 400, precioMayor: 320 },
-{ name: "Ayurfibra (1 onza)", precioDetalle: 500, precioMayor: 400 },
-{ name: "Ayurmona (90 cápsulas)", precioDetalle: 600, precioMayor: 480 },
-{ name: "Barro (16 onzas)", precioDetalle: 200, precioMayor: 160 },
-{ name: "Broncovedi (4 onzas)", precioDetalle: 300, precioMayor: 240 },
-{ name: "Calaguala (2 onzas)", precioDetalle: 250, precioMayor: 200 },
-{ name: "Capsulas vacias (millar)", precioDetalle: 450, precioMayor: 360 },
-{ name: "Capsulas Vacias pag. 30 und", precioDetalle: 75, precioMayor: 60 },
-{ name: "Carbon de Eucalipto (frasco)", precioDetalle: 200, precioMayor: 160 },
-{ name: "Cardo mariano (2 onzas)", precioDetalle: 250, precioMayor: 200 },
-{ name: "Cecropia (2 onzas)", precioDetalle: 200, precioMayor: 160 },
-{ name: "Chanca Piedra (60 capsulas)", precioDetalle: 600, precioMayor: 480 },
-{ name: "Citrato de calcio con magnesio (100 cápsulas)", precioDetalle: 600, precioMayor: 480 },
-{ name: "Citrato de Magnesio polvo (142 gr.)", precioDetalle: 500, precioMayor: 400 },
-{ name: "Citrato de Potasio (Polvo)(5 oz)", precioDetalle: 500, precioMayor: 400 },
-{ name: "Cola de Caballo (3 oz)", precioDetalle: 200, precioMayor: 160 },
-{ name: "Colageno Hidrolizado (5,3 oz)", precioDetalle: 800, precioMayor: 700 },
-{ name: "Crema Relajante Relabir (75 grs.)", precioDetalle: 350, precioMayor: 280 },
-{ name: "Cristal Ionteracare", precioDetalle: 930, precioMayor: 744 },
-{ name: "Curcuma en Polvo (3.5 onzas)", precioDetalle: 200, precioMayor: 160 },
-{ name: "Curcumin (90 cápsulas)", precioDetalle: 500, precioMayor: 400 },
-{ name: "Damiana (90 cápsulas)", precioDetalle: 500, precioMayor: 400 },
-{ name: "Damiana (polvo) lb", precioDetalle: 600, precioMayor: 480 },
-{ name: "Diabenol (60 capsulas)", precioDetalle: 2600, precioMayor: 2080 },
-{ name: "Dianim (1 onza)", precioDetalle: 300, precioMayor: 240 },
-{ name: "Diente de león (2 onzas)", precioDetalle: 250, precioMayor: 200 },
-{ name: "Dióxido de cloro (3000 ppm) 8 onz", precioDetalle: 500, precioMayor: 400 },
-{ name: "Fennel (90 cápsulas)", precioDetalle: 500, precioMayor: 400 },
-{ name: "Fenugreek (90 cápsulas)", precioDetalle: 500, precioMayor: 400 },
-{ name: "Fenugreek en Polvo (2 onzas)", precioDetalle: 250, precioMayor: 200 },
-{ name: "Flor de Jamaica (3 onzas)", precioDetalle: 200, precioMayor: 160 },
-{ name: "Flor de Jamaica (6 onzas)", precioDetalle: 275, precioMayor: 220 },
-{ name: "Flores de Lavanda (2 oz)", precioDetalle: 250, precioMayor: 200 },
-{ name: "Ganoderma (60 cápsulas)", precioDetalle: 600, precioMayor: 480 },
-{ name: "Ginkgo biloba (90 cápsulas)", precioDetalle: 500, precioMayor: 400 },
-{ name: "Ginseng Koreano (90 cápsulas)", precioDetalle: 600, precioMayor: 480 },
-{ name: "Glucosamina Sulfato (90 cápsulas) 400mg", precioDetalle: 600, precioMayor: 480 },
-{ name: "Harina de almendras (1/2 lb.)", precioDetalle: 350, precioMayor: 255 },
-{ name: "Huanarpo Macho (90 capsulas)", precioDetalle: 600, precioMayor: 450 },	    
-{ name: "Hojas de laurel (2 onzas)", precioDetalle: 150, precioMayor: 120 },
-{ name: "Hojas de zapote blanco (2 onzas)", precioDetalle: 200, precioMayor: 160 },
-{ name: "IonTeraCare", precioDetalle: 8200, precioMayor: 7380 },
-{ name: "Jarabe de Yacon (260 gr.)", precioDetalle: 600, precioMayor: 450 },
-{ name: "Jenjibre (3.5 onzas)", precioDetalle: 200, precioMayor: 160 },
-{ name: "Kelp (90 capsulas)", precioDetalle: 500, precioMayor: 400 },
-{ name: "Levadura nutricional (5 onzas)", precioDetalle: 400, precioMayor: 320 },
-{ name: "Levitron (juego interactivo magnetico)", precioDetalle: 800, precioMayor: 640 },
-{ name: "Licorice (2 onzas)", precioDetalle: 250, precioMayor: 200 },
-{ name: "Maca (90 cápsulas)", precioDetalle: 500, precioMayor: 400 },
-{ name: "Maca en Polvo (3.5 onzas)", precioDetalle: 400, precioMayor: 320 },
-{ name: "Macadamia Nueces (227 gramos) (1/2 lb)", precioDetalle: 300, precioMayor: 240 },
-{ name: "Miel de Abeja (en panal)", precioDetalle: 500, precioMayor: 400 },
-{ name: "Moringa Frasco (90 cápsulas)", precioDetalle: 450, precioMayor: 360 },
-{ name: "Moringa Polvo (3.5 onzas)", precioDetalle: 200, precioMayor: 160 },
-{ name: "Parasitos (4 onzas)", precioDetalle: 400, precioMayor: 320 },
-{ name: "Parche Ionteracare", precioDetalle: 1900, precioMayor: 1710 },
-{ name: "Pasiflora en Polvo (2 oz)", precioDetalle: 250, precioMayor: 200 },
-{ name: "Pau de Arco (2 onzas)", precioDetalle: 300, precioMayor: 240 },
-{ name: "Polen de Abeja Natural (5 onzas)", precioDetalle: 550, precioMayor: 440 },
-{ name: "Progesterona (90 cápsulas)", precioDetalle: 600, precioMayor: 510 },
-{ name: "Propoleo", precioDetalle: 600, precioMayor: 510 },
-{ name: "Prostazan (500 mg) (60 capsulas)", precioDetalle: 600, precioMayor: 480 },
-{ name: "Quercetin & Bromelain", precioDetalle: 600, precioMayor: 420 },
-{ name: "Raíz de pachuli (2 onzas)", precioDetalle: 200, precioMayor: 160 },
-{ name: "Sacha Inchi (227 grs)", precioDetalle: 800, precioMayor: 680 },
-{ name: "Sangre de Drago (20 ml)", precioDetalle: 600, precioMayor: 480 },
-{ name: "Saw palmetto (90 cápsulas)", precioDetalle: 600, precioMayor: 480 },
-{ name: "Semilla de cilantro (3 onzas)", precioDetalle: 50, precioMayor: 40 },
-{ name: "Semillas de Cajuil (227 gr)", precioDetalle: 300, precioMayor: 240 },
-{ name: "Semillas de hinojo (2 onzas)", precioDetalle: 100, precioMayor: 80 },
-{ name: "Té Matcha (sobre 150 gr.)", precioDetalle: 1500, precioMayor: 1200 },
-{ name: "Triple magnesio (100 cápsulas)", precioDetalle: 600, precioMayor: 480 },
-{ name: "Uña de gato (2 onzas)", precioDetalle: 250, precioMayor: 200 },
-{ name: "Valeriana y Pasiflora (60 cápsulas)", precioDetalle: 600, precioMayor: 480 },
-{ name: "Xanthin (60 capsulas)", precioDetalle: 1500, precioMayor: 1200 },
-{ name: "Yodo atómico (1 onza)", precioDetalle: 500, precioMayor: 400 },
-{ name: "Zeolita (90 cápsulas)", precioDetalle: 600, precioMayor: 480 },
+        <div class="relative my-6 w-full max-w-md">
+          <!-- Icono lupa -->
+          <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+            <svg
+              class="w-5 h-5 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5 18a7.5 7.5 0 006.15-3.35z"
+              />
+            </svg>
+          </span>
 
+          <!-- Input búsqueda -->
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="BUSCAR PRODUCTOS..."
+            class="w-full h-14 pl-10 pr-4 text-gray-700 rounded-2xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+          />
+        </div>
 
-    ];
+        <div
+          id="productList"
+          class="grid grid-cols-2 md:grid-cols-3 gap-4"
+        ></div>
+      </section>
 
-    const productList = document.getElementById('productList');
-    const searchInput = document.getElementById('searchInput');
+      <aside class="lg:col-span-1 bg-white p-6 rounded-lg shadow-xl">
+        <h2 class="text-xl font-bold text-blue-700 mb-2 text-center">
+          CONSUMIDOR FINAL
+        </h2>
+        <table class="min-w-full cart-table mb-4">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Cant.</th>
+              <th>Precio</th>
+              <th>Total</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="cartBody">
+            <tr>
+              <td colspan="5" class="text-center text-gray-500 py-4">
+                El carrito está vacío.
+              </td>
+            </tr>
+          </tbody>
+        </table>
 
-    function renderProducts() {
-      productList.innerHTML = "";
-      const query = searchInput.value.toLowerCase();
-      const filtered = products.filter(p => p.name.toLowerCase().includes(query));
-      filtered.forEach((product, index) => {
-        const card = document.createElement('div');
-        card.className = 'product-card';
-        card.innerHTML = `
+        <hr class="my-4 border-gray-500" />
+
+        <div class="flex justify-between mb-2">
+          <span>Subtotal:</span
+          ><span id="subtotal" class="font-semibold">$0.00</span>
+        </div>
+        <div class="flex justify-between mb-2">
+          <span>Descuento (%):</span
+          ><input
+            type="number"
+            id="discountInput"
+            class="quantity-input"
+            min="0"
+            max="100"
+            value="0"
+          />
+        </div>
+        <div class="flex justify-between mb-4 text-lg font-bold">
+          <span>Total a Pagar:</span><span id="total">$0.00</span>
+        </div>
+
+        <hr class="my-4 border-gray-500" />
+
+        <button id="checkoutBtn" class="btn-primary w-full mb-2" disabled>
+          Procesar e Imprimir
+        </button>
+        <button
+          id="clearCartBtn"
+          class="btn-primary w-full bg-red-600 hover:bg-red-700"
+          disabled
+        >
+          Vaciar Carrito
+        </button>
+
+        <button
+          id="generateDailyReportBtn"
+          class="btn-primary w-full bg-green-600 hover:bg-green-700 mt-2"
+        >
+          Generar Reporte Diario
+        </button>
+        <button
+          id="clearDailySalesBtn"
+          class="btn-primary w-full bg-orange-600 hover:bg-orange-700 mt-2"
+        >
+          Borrar Datos Diarios
+        </button>
+
+        <div class="text-center mt-4 font-semibold text-green-600">
+          GRACIAS POR SU COMPRA
+        </div>
+
+        <hr class="my-4 border-gray-500" />
+
+        <div class="invoice-summary text-sm">
+          <p>Fecha: <span id="invoiceDate"></span></p>
+          <p>Factura N°: <span id="invoiceNumber"></span></p>
+          <p>Cantidad de Artículos: <span id="totalItems"></span></p>
+          <p><strong>Cajero:</strong> <span id="cajeroFactura"></span></p>
+          <p>
+            <strong>Cliente:</strong> <span id="invoiceCustomerName"></span>
+          </p>
+          <p>
+            <strong>Teléfono:</strong> <span id="invoiceCustomerPhone"></span>
+          </p>
+          <p>
+            <strong>Dirección:</strong>
+            <span id="invoiceCustomerAddress"></span>
+          </p>
+
+          <hr class="my-2" />
+          <div class="social-links">
+            <p>Email: productosintegralesryf@gmail.com</p>
+            <p>Síguenos: Facebook | @prointegrales | YouTube</p>
+            <p>
+              <a
+                href="https://ryfproductosintegrales.com"
+                target="_blank"
+                class="text-blue-600"
+                >www.ryfproductosintegrales.com</a
+              >
+            </p>
+          </div>
+        </div>
+      </aside>
+    </main>
+    <footer class="bg-gray-800 text-white p-4 text-center text-sm">
+      <p>&copy; 2025 R&amp;F Productos Integrales</p>
+    </footer>
+
+    <script>
+      const products = [
+        {
+          name: "Aceite de ajonjoli (4 onzas)",
+          precioDetalle: 400,
+          precioMayor: 320,
+        },
+        { name: "Aceite de Batana", precioDetalle: 1200, precioMayor: 1050 },
+        {
+          name: "Aceite de coco (8 onzas)",
+          precioDetalle: 400,
+          precioMayor: 320,
+        },
+        {
+          name: "Aceite de coco medio galon",
+          precioDetalle: 1200,
+          precioMayor: 1020,
+        },
+        {
+          name: "Aceite de coco galon",
+          precioDetalle: 1900,
+          precioMayor: 1710,
+        },
+        {
+          name: "Aceite de copaiba (1 onza)",
+          precioDetalle: 500,
+          precioMayor: 400,
+        },
+        {
+          name: "Aceite de linaza (8 onzas)",
+          precioDetalle: 500,
+          precioMayor: 400,
+        },
+        {
+          name: "Aceite de oregano (1 onza)",
+          precioDetalle: 950,
+          precioMayor: 760,
+        },
+        {
+          name: "Aceite de Ricino (4 oz)",
+          precioDetalle: 300,
+          precioMayor: 240,
+        },
+        {
+          name: "Aceites Esenciales (10 ml)",
+          precioDetalle: 800,
+          precioMayor: 640,
+        },
+        {
+          name: "Adipo-CF (90 capsulas)",
+          precioDetalle: 500,
+          precioMayor: 400,
+        },
+        {
+          name: "Adipofin (30 capsulas)",
+          precioDetalle: 600,
+          precioMayor: 480,
+        },
+        { name: "Alcachofa (2 onzas)", precioDetalle: 250, precioMayor: 200 },
+        { name: "Alcachofa (60 cap)", precioDetalle: 600, precioMayor: 480 },
+        {
+          name: "Almendras (227 gramos)",
+          precioDetalle: 300,
+          precioMayor: 240,
+        },
+        {
+          name: "Amargo sueco (8 onzas)",
+          precioDetalle: 1500,
+          precioMayor: 1200,
+        },
+        { name: "Anís comino (2 onzas)", precioDetalle: 50, precioMayor: 40 },
+        { name: "Ashwagandha (60 cap)", precioDetalle: 600, precioMayor: 480 },
+        {
+          name: "Ayurcolon (3,25 onzas)",
+          precioDetalle: 400,
+          precioMayor: 320,
+        },
+        { name: "Ayurfibra (1 onza)", precioDetalle: 500, precioMayor: 400 },
+        {
+          name: "Ayurmona (90 cápsulas)",
+          precioDetalle: 600,
+          precioMayor: 480,
+        },
+        { name: "Barro (16 onzas)", precioDetalle: 200, precioMayor: 160 },
+        { name: "Broncovedi (4 onzas)", precioDetalle: 300, precioMayor: 240 },
+        { name: "Calaguala (2 onzas)", precioDetalle: 250, precioMayor: 200 },
+        {
+          name: "Capsulas vacias (millar)",
+          precioDetalle: 450,
+          precioMayor: 360,
+        },
+        {
+          name: "Capsulas Vacias pag. 30 und",
+          precioDetalle: 75,
+          precioMayor: 60,
+        },
+        {
+          name: "Carbon de Eucalipto (frasco)",
+          precioDetalle: 200,
+          precioMayor: 160,
+        },
+        {
+          name: "Cardo mariano (2 onzas)",
+          precioDetalle: 250,
+          precioMayor: 200,
+        },
+        { name: "Cecropia (2 onzas)", precioDetalle: 200, precioMayor: 160 },
+        {
+          name: "Chanca Piedra (60 capsulas)",
+          precioDetalle: 600,
+          precioMayor: 480,
+        },
+        {
+          name: "Citrato de calcio con magnesio (100 cápsulas)",
+          precioDetalle: 600,
+          precioMayor: 480,
+        },
+        {
+          name: "Citrato de Magnesio polvo (142 gr.)",
+          precioDetalle: 500,
+          precioMayor: 400,
+        },
+        {
+          name: "Citrato de Potasio (Polvo)(5 oz)",
+          precioDetalle: 500,
+          precioMayor: 400,
+        },
+        {
+          name: "Cola de Caballo (3 oz)",
+          precioDetalle: 200,
+          precioMayor: 160,
+        },
+        {
+          name: "Colageno Hidrolizado (5,3 oz)",
+          precioDetalle: 800,
+          precioMayor: 700,
+        },
+        {
+          name: "Crema Relajante Relabir (75 grs.)",
+          precioDetalle: 350,
+          precioMayor: 280,
+        },
+        { name: "Cristal Ionteracare", precioDetalle: 930, precioMayor: 744 },
+        {
+          name: "Curcuma en Polvo (3.5 onzas)",
+          precioDetalle: 200,
+          precioMayor: 160,
+        },
+        {
+          name: "Curcumin (90 cápsulas)",
+          precioDetalle: 500,
+          precioMayor: 400,
+        },
+        { name: "Damiana (90 cápsulas)", precioDetalle: 500, precioMayor: 400 },
+        { name: "Damiana (polvo) lb", precioDetalle: 600, precioMayor: 480 },
+        {
+          name: "Diabenol (60 capsulas)",
+          precioDetalle: 2600,
+          precioMayor: 2080,
+        },
+        { name: "Dianim (1 onza)", precioDetalle: 300, precioMayor: 240 },
+        {
+          name: "Diente de león (2 onzas)",
+          precioDetalle: 250,
+          precioMayor: 200,
+        },
+        {
+          name: "Dióxido de cloro (3000 ppm) 8 onz",
+          precioDetalle: 500,
+          precioMayor: 400,
+        },
+        { name: "Fennel (90 cápsulas)", precioDetalle: 500, precioMayor: 400 },
+        {
+          name: "Fenugreek (90 cápsulas)",
+          precioDetalle: 500,
+          precioMayor: 400,
+        },
+        {
+          name: "Fenugreek en Polvo (2 onzas)",
+          precioDetalle: 250,
+          precioMayor: 200,
+        },
+        {
+          name: "Flor de Jamaica (3 onzas)",
+          precioDetalle: 200,
+          precioMayor: 160,
+        },
+        {
+          name: "Flor de Jamaica (6 onzas)",
+          precioDetalle: 275,
+          precioMayor: 220,
+        },
+        {
+          name: "Flores de Lavanda (2 oz)",
+          precioDetalle: 250,
+          precioMayor: 200,
+        },
+        {
+          name: "Ganoderma (60 cápsulas)",
+          precioDetalle: 600,
+          precioMayor: 480,
+        },
+        {
+          name: "Ginkgo biloba (90 cápsulas)",
+          precioDetalle: 500,
+          precioMayor: 400,
+        },
+        {
+          name: "Ginseng Koreano (90 cápsulas)",
+          precioDetalle: 600,
+          precioMayor: 480,
+        },
+        {
+          name: "Glucosamina Sulfato (90 cápsulas) 400mg",
+          precioDetalle: 600,
+          precioMayor: 480,
+        },
+        {
+          name: "Harina de almendras (1/2 lb.)",
+          precioDetalle: 350,
+          precioMayor: 255,
+        },
+        {
+          name: "Huanarpo Macho (90 capsulas)",
+          precioDetalle: 600,
+          precioMayor: 450,
+        },
+        {
+          name: "Hojas de laurel (2 onzas)",
+          precioDetalle: 150,
+          precioMayor: 120,
+        },
+        {
+          name: "Hojas de zapote blanco (2 onzas)",
+          precioDetalle: 200,
+          precioMayor: 160,
+        },
+        { name: "IonTeraCare", precioDetalle: 8200, precioMayor: 7380 },
+        {
+          name: "Jarabe de Yacon (260 gr.)",
+          precioDetalle: 600,
+          precioMayor: 450,
+        },
+        { name: "Jenjibre (3.5 onzas)", precioDetalle: 200, precioMayor: 160 },
+        { name: "Kelp (90 capsulas)", precioDetalle: 500, precioMayor: 400 },
+        {
+          name: "Levadura nutricional (5 onzas)",
+          precioDetalle: 400,
+          precioMayor: 320,
+        },
+        {
+          name: "Levitron (juego interactivo magnetico)",
+          precioDetalle: 800,
+          precioMayor: 640,
+        },
+        { name: "Licorice (2 onzas)", precioDetalle: 250, precioMayor: 200 },
+        { name: "Maca (90 cápsulas)", precioDetalle: 500, precioMayor: 400 },
+        {
+          name: "Maca en Polvo (3.5 onzas)",
+          precioDetalle: 400,
+          precioMayor: 320,
+        },
+        {
+          name: "Macadamia Nueces (227 gramos) (1/2 lb)",
+          precioDetalle: 300,
+          precioMayor: 240,
+        },
+        {
+          name: "Miel de Abeja (en panal)",
+          precioDetalle: 500,
+          precioMayor: 400,
+        },
+        {
+          name: "Moringa Frasco (90 cápsulas)",
+          precioDetalle: 450,
+          precioMayor: 360,
+        },
+        {
+          name: "Moringa Polvo (3.5 onzas)",
+          precioDetalle: 200,
+          precioMayor: 160,
+        },
+        { name: "Parasitos (4 onzas)", precioDetalle: 400, precioMayor: 320 },
+        { name: "Parche Ionteracare", precioDetalle: 1900, precioMayor: 1710 },
+        {
+          name: "Pasiflora en Polvo (2 oz)",
+          precioDetalle: 250,
+          precioMayor: 200,
+        },
+        { name: "Pau de Arco (2 onzas)", precioDetalle: 300, precioMayor: 240 },
+        {
+          name: "Polen de Abeja Natural (5 onzas)",
+          precioDetalle: 550,
+          precioMayor: 440,
+        },
+        {
+          name: "Progesterona (90 cápsulas)",
+          precioDetalle: 600,
+          precioMayor: 510,
+        },
+        { name: "Propoleo", precioDetalle: 600, precioMayor: 510 },
+        {
+          name: "Prostazan (500 mg) (60 capsulas)",
+          precioDetalle: 600,
+          precioMayor: 480,
+        },
+        { name: "Quercetin & Bromelain", precioDetalle: 600, precioMayor: 420 },
+        {
+          name: "Raíz de pachuli (2 onzas)",
+          precioDetalle: 200,
+          precioMayor: 160,
+        },
+        { name: "Sacha Inchi (227 grs)", precioDetalle: 800, precioMayor: 680 },
+        {
+          name: "Sangre de Drago (20 ml)",
+          precioDetalle: 600,
+          precioMayor: 480,
+        },
+        {
+          name: "Saw palmetto (90 cápsulas)",
+          precioDetalle: 600,
+          precioMayor: 480,
+        },
+        {
+          name: "Semilla de cilantro (3 onzas)",
+          precioDetalle: 50,
+          precioMayor: 40,
+        },
+        {
+          name: "Semillas de Cajuil (227 gr)",
+          precioDetalle: 300,
+          precioMayor: 240,
+        },
+        {
+          name: "Semillas de hinojo (2 onzas)",
+          precioDetalle: 100,
+          precioMayor: 80,
+        },
+        {
+          name: "Té Matcha (sobre 150 gr.)",
+          precioDetalle: 1500,
+          precioMayor: 1200,
+        },
+        {
+          name: "Triple magnesio (100 cápsulas)",
+          precioDetalle: 600,
+          precioMayor: 480,
+        },
+        { name: "Uña de gato (2 onzas)", precioDetalle: 250, precioMayor: 200 },
+        {
+          name: "Valeriana y Pasiflora (60 cápsulas)",
+          precioDetalle: 600,
+          precioMayor: 480,
+        },
+        {
+          name: "Xanthin (60 capsulas)",
+          precioDetalle: 1500,
+          precioMayor: 1200,
+        },
+        { name: "Yodo atómico (1 onza)", precioDetalle: 500, precioMayor: 400 },
+        { name: "Zeolita (90 cápsulas)", precioDetalle: 600, precioMayor: 480 },
+      ];
+
+      const productList = document.getElementById("productList");
+      const searchInput = document.getElementById("searchInput");
+
+      function renderProducts() {
+        productList.innerHTML = "";
+        const query = searchInput.value.toLowerCase();
+        const filtered = products.filter((p) =>
+          p.name.toLowerCase().includes(query)
+        );
+        filtered.forEach((product, index) => {
+          const card = document.createElement("div");
+          card.className = "product-card";
+          card.innerHTML = `
           <h3 class="font-semibold">${product.name}</h3>
           <p>Detalle: $${product.precioDetalle}</p>
           <p>Mayor: $${product.precioMayor}</p>
           <input type="number" min="" value="" class="quantity-input mt-2" placeholder="Cant.">
           <button class="btn-primary mt-2">Agregar</button>
         `;
-        const qtyInput = card.querySelector('input');
-        const btn = card.querySelector('button');
+          const qtyInput = card.querySelector("input");
+          const btn = card.querySelector("button");
 
-        qtyInput.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter') btn.click();
+          qtyInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") btn.click();
+          });
+
+          btn.addEventListener("click", () => {
+            const cantidad = parseInt(qtyInput.value);
+            if (cantidad > 0) addToCart(product, cantidad);
+          });
+
+          productList.appendChild(card);
         });
+      }
 
-        btn.addEventListener('click', () => {
-          const cantidad = parseInt(qtyInput.value);
-          if (cantidad > 0) addToCart(product, cantidad);
-        });
+      searchInput.addEventListener("input", renderProducts);
+      renderProducts();
 
-        productList.appendChild(card);
-      });
-    }
+      let cart = [];
+      let dailySales = []; // Array para almacenar los datos del reporte
 
-    searchInput.addEventListener('input', renderProducts);
-    renderProducts();
-
-    let cart = [];
-    let dailySales = []; // Array para almacenar los datos del reporte
-
-    // Función para cargar las ventas diarias desde localStorage
-    function loadDailySales() {
-        const storedSales = localStorage.getItem('dailySales');
+      // Función para cargar las ventas diarias desde localStorage
+      function loadDailySales() {
+        const storedSales = localStorage.getItem("dailySales");
         if (storedSales) {
-            dailySales = JSON.parse(storedSales);
+          dailySales = JSON.parse(storedSales);
         }
-    }
+      }
 
-    // Función para guardar las ventas diarias en localStorage
-    function saveDailySales() {
-        localStorage.setItem('dailySales', JSON.stringify(dailySales));
-    }
+      // Función para guardar las ventas diarias en localStorage
+      function saveDailySales() {
+        localStorage.setItem("dailySales", JSON.stringify(dailySales));
+      }
 
-    // Función para añadir los productos del carrito a las ventas diarias con detalles de la factura
-    function addToDailySales(cartItems, invoiceDetails) {
-        cartItems.forEach(item => {
-            const precioVenta = item.cantidad >= 5 ? item.precioMayor : item.precioDetalle;
-            const totalLineaBruto = precioVenta * item.cantidad; 
-            dailySales.push({
-                fecha: invoiceDetails.fecha,
-                hora: invoiceDetails.hora,
-                facturaNumero: invoiceDetails.facturaNumero,
-                nombreProducto: item.name,
-                cantidadProducto: item.cantidad,
-                precioUnitarioAplicado: precioVenta.toFixed(2),
-                totalLineaBruto: totalLineaBruto.toFixed(2),
-                descuentoPorcentajeFactura: invoiceDetails.descuentoPorcentaje.toFixed(2),
-                descuentoMontoFactura: invoiceDetails.descuentoMonto.toFixed(2),
-                totalFacturaNeto: invoiceDetails.totalPagar.toFixed(2)
-            });
+      // Función para añadir los productos del carrito a las ventas diarias con detalles de la factura
+      function addToDailySales(cartItems, invoiceDetails) {
+        cartItems.forEach((item) => {
+          const precioVenta =
+            item.cantidad >= 5 ? item.precioMayor : item.precioDetalle;
+          const totalLineaBruto = precioVenta * item.cantidad;
+          dailySales.push({
+            fecha: invoiceDetails.fecha,
+            hora: invoiceDetails.hora,
+            facturaNumero: invoiceDetails.facturaNumero,
+            nombreProducto: item.name,
+            cantidadProducto: item.cantidad,
+            precioUnitarioAplicado: precioVenta.toFixed(2),
+            totalLineaBruto: totalLineaBruto.toFixed(2),
+            descuentoPorcentajeFactura:
+              invoiceDetails.descuentoPorcentaje.toFixed(2),
+            descuentoMontoFactura: invoiceDetails.descuentoMonto.toFixed(2),
+            totalFacturaNeto: invoiceDetails.totalPagar.toFixed(2),
+          });
         });
         saveDailySales();
-    }
+      }
 
-    function addToCart(product, cantidad) {
-      const existing = cart.find(p => p.name === product.name);
-      if (existing) { existing.cantidad += cantidad; }
-      else { cart.push({ ...product, cantidad }); }
-      renderCart();
-    }
+      function addToCart(product, cantidad) {
+        const existing = cart.find((p) => p.name === product.name);
+        if (existing) {
+          existing.cantidad += cantidad;
+        } else {
+          cart.push({ ...product, cantidad });
+        }
+        renderCart();
 
-    function renderCart() {
-      const cartBody = document.getElementById('cartBody');
-      cartBody.innerHTML = "";
-      if (cart.length === 0) {
-        cartBody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500 py-4">El carrito está vacío.</td></tr>';
-        document.getElementById('checkoutBtn').disabled = true;
-        document.getElementById('clearCartBtn').disabled = true;
-      } else {
-        let totalItemsInCart = 0;
-        cart.forEach((item, i) => {
-          const precio = item.cantidad >= 5 ? item.precioMayor : item.precioDetalle;
-          const total = precio * item.cantidad;
-          totalItemsInCart += item.cantidad; 
-          const row = document.createElement('tr');
-          row.innerHTML = `
+        // 🔑 limpiar input y mostrar todos los productos
+        searchInput.value = "";
+        renderProducts();
+        searchInput.focus(); // 👉 el cursor regresa automático al buscador
+      }
+
+      function renderCart() {
+        const cartBody = document.getElementById("cartBody");
+        cartBody.innerHTML = "";
+        if (cart.length === 0) {
+          cartBody.innerHTML =
+            '<tr><td colspan="5" class="text-center text-gray-500 py-4">El carrito está vacío.</td></tr>';
+          document.getElementById("checkoutBtn").disabled = true;
+          document.getElementById("clearCartBtn").disabled = true;
+        } else {
+          let totalItemsInCart = 0;
+          cart.forEach((item, i) => {
+            const precio =
+              item.cantidad >= 5 ? item.precioMayor : item.precioDetalle;
+            const total = precio * item.cantidad;
+            totalItemsInCart += item.cantidad;
+            const row = document.createElement("tr");
+            row.innerHTML = `
             <td>${item.name}</td>
             <td>${item.cantidad}</td>
             <td>$${precio.toFixed(2)}</td>
             <td>$${total.toFixed(2)}</td>
             <td><button onclick="removeItem(${i})" class="text-red-600">x</button></td>
           `;
-          cartBody.appendChild(row);
-        });
-        document.getElementById('checkoutBtn').disabled = false;
-        document.getElementById('clearCartBtn').disabled = false;
-        document.getElementById('totalItems').textContent = totalItemsInCart; 
-        calculateTotals();
+            cartBody.appendChild(row);
+          });
+          document.getElementById("checkoutBtn").disabled = false;
+          document.getElementById("clearCartBtn").disabled = false;
+          document.getElementById("totalItems").textContent = totalItemsInCart;
+          calculateTotals();
+        }
       }
-    }
 
-    function removeItem(index) {
-      cart.splice(index, 1);
-      renderCart();
-    }
+      function removeItem(index) {
+        cart.splice(index, 1);
+        renderCart();
+      }
 
-    document.getElementById('discountInput').addEventListener('input', calculateTotals);
+      document
+        .getElementById("discountInput")
+        .addEventListener("input", calculateTotals);
 
-    document.getElementById('checkoutBtn').addEventListener('click', () => {
+      document.getElementById("checkoutBtn").addEventListener("click", () => {
         // Capturar los valores actuales para la factura y el reporte
-        const currentSubtotal = parseFloat(document.getElementById('subtotal').textContent.replace('$', ''));
-        const currentDiscountPercent = parseFloat(document.getElementById('discountInput').value) || 0;
-        const currentTotal = parseFloat(document.getElementById('total').textContent.replace('$', ''));
-        const currentInvoiceNumber = Math.floor(Math.random() * 1000000); 
+        const currentSubtotal = parseFloat(
+          document.getElementById("subtotal").textContent.replace("$", "")
+        );
+        const currentDiscountPercent =
+          parseFloat(document.getElementById("discountInput").value) || 0;
+        const currentTotal = parseFloat(
+          document.getElementById("total").textContent.replace("$", "")
+        );
+        const currentInvoiceNumber = Math.floor(Math.random() * 1000000);
         const now = new Date();
         const saleDate = now.toLocaleDateString();
         const saleTime = now.toLocaleTimeString();
-        const totalArticlesSold = parseInt(document.getElementById('totalItems').textContent);
+        const totalArticlesSold = parseInt(
+          document.getElementById("totalItems").textContent
+        );
 
         const discountAmount = currentSubtotal - currentTotal;
 
         // Objeto con detalles de la factura para pasar a addToDailySales
         const invoiceDetails = {
-            fecha: saleDate,
-            hora: saleTime,
-            facturaNumero: currentInvoiceNumber,
-            subtotalOriginal: currentSubtotal,
-            descuentoPorcentaje: currentDiscountPercent,
-            descuentoMonto: discountAmount,
-            totalPagar: currentTotal,
-            cantidadArticulosFactura: totalArticlesSold
+          fecha: saleDate,
+          hora: saleTime,
+          facturaNumero: currentInvoiceNumber,
+          subtotalOriginal: currentSubtotal,
+          descuentoPorcentaje: currentDiscountPercent,
+          descuentoMonto: discountAmount,
+          totalPagar: currentTotal,
+          cantidadArticulosFactura: totalArticlesSold,
         };
 
         // Guardar los productos del carrito con los detalles de la factura
         if (cart.length > 0) {
-            addToDailySales(cart, invoiceDetails);
+          addToDailySales(cart, invoiceDetails);
         }
 
-        const nombreCajero = document.getElementById('cajero').value;
-        document.getElementById('cajeroFactura').textContent = nombreCajero;
-        
-        const customerName = document.getElementById('customerName').value;
-        const customerPhone = document.getElementById('customerPhone').value;
-        const customerAddress = document.getElementById('customerAddress').value;
+        const nombreCajero = document.getElementById("cajero").value;
+        document.getElementById("cajeroFactura").textContent = nombreCajero;
 
-        document.getElementById('invoiceCustomerName').textContent = customerName || 'N/A';
-        document.getElementById('invoiceCustomerPhone').textContent = customerPhone || 'N/A';
-        document.getElementById('invoiceCustomerAddress').textContent = customerAddress || 'N/A';
-        document.getElementById('invoiceDate').textContent = saleDate; 
-        document.getElementById('invoiceNumber').textContent = currentInvoiceNumber; 
+        const customerName = document.getElementById("customerName").value;
+        const customerPhone = document.getElementById("customerPhone").value;
+        const customerAddress =
+          document.getElementById("customerAddress").value;
+
+        document.getElementById("invoiceCustomerName").textContent =
+          customerName || "N/A";
+        document.getElementById("invoiceCustomerPhone").textContent =
+          customerPhone || "N/A";
+        document.getElementById("invoiceCustomerAddress").textContent =
+          customerAddress || "N/A";
+        document.getElementById("invoiceDate").textContent = saleDate;
+        document.getElementById("invoiceNumber").textContent =
+          currentInvoiceNumber;
 
         window.print();
 
         // Vaciar el carrito y resetear descuento después de la venta
         cart = [];
-        document.getElementById('discountInput').value = 0;
+        document.getElementById("discountInput").value = 0;
         renderCart();
         calculateTotals(); // Para asegurar que los totales se reinicien
-    });
-
-    document.getElementById('clearCartBtn').addEventListener('click', () => {
-      cart = [];
-      document.getElementById('discountInput').value = 0; // Reiniciar descuento
-      renderCart();
-      calculateTotals(); // Para asegurar que los totales se reinicien
-    });
-
-    function calculateTotals() {
-      let subtotal = 0;
-      cart.forEach(item => {
-        const precio = item.cantidad >= 5 ? item.precioMayor : item.precioDetalle;
-        subtotal += precio * item.cantidad;
       });
-      const discount = parseFloat(document.getElementById('discountInput').value) || 0;
-      const total = subtotal - (subtotal * discount / 100);
-      document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
-      document.getElementById('total').textContent = `$${total.toFixed(2)}`;
-    }
 
-    // --- FUNCIONES PARA EL REPORTE DIARIO ---
+      document.getElementById("clearCartBtn").addEventListener("click", () => {
+        cart = [];
+        document.getElementById("discountInput").value = 0; // Reiniciar descuento
+        renderCart();
+        calculateTotals(); // Para asegurar que los totales se reinicien
+      });
 
-    function generateCSV() {
+      function calculateTotals() {
+        let subtotal = 0;
+        cart.forEach((item) => {
+          const precio =
+            item.cantidad >= 5 ? item.precioMayor : item.precioDetalle;
+          subtotal += precio * item.cantidad;
+        });
+        const discount =
+          parseFloat(document.getElementById("discountInput").value) || 0;
+        const total = subtotal - (subtotal * discount) / 100;
+        document.getElementById("subtotal").textContent = `$${subtotal.toFixed(
+          2
+        )}`;
+        document.getElementById("total").textContent = `$${total.toFixed(2)}`;
+      }
+
+      // --- FUNCIONES PARA EL REPORTE DIARIO ---
+
+      function generateCSV() {
         if (dailySales.length === 0) {
-            alert('No hay datos de ventas para generar el reporte diario.');
-            return;
+          alert("No hay datos de ventas para generar el reporte diario.");
+          return;
         }
 
         const headers = [
-            "Fecha",
-            "Hora",
-            "Factura Nro.",
-            "Nombre Producto",
-            "Cantidad Producto",
-            "Precio Unitario Aplicado",
-            "Total Linea Bruto",
-            "Descuento (%) Factura",
-            "Monto Descuento Factura",
-            "Total Factura Neto"
+          "Fecha",
+          "Hora",
+          "Factura Nro.",
+          "Nombre Producto",
+          "Cantidad Producto",
+          "Precio Unitario Aplicado",
+          "Total Linea Bruto",
+          "Descuento (%) Factura",
+          "Monto Descuento Factura",
+          "Total Factura Neto",
         ];
-        let csv = headers.join(';') + '\n'; // Usar punto y coma como delimitador
+        let csv = headers.join(";") + "\n"; // Usar punto y coma como delimitador
 
-        dailySales.forEach(item => { 
-            const values = [
-                item.fecha,
-                item.hora,
-                item.facturaNumero,
-                `"${item.nombreProducto.replace(/"/g, '""')}"`,
-                item.cantidadProducto,
-                item.precioUnitarioAplicado,
-                item.totalLineaBruto,
-                item.descuentoPorcentajeFactura,
-                item.descuentoMontoFactura,
-                item.totalFacturaNeto
-            ];
-            csv += values.join(';') + '\n';
+        dailySales.forEach((item) => {
+          const values = [
+            item.fecha,
+            item.hora,
+            item.facturaNumero,
+            `"${item.nombreProducto.replace(/"/g, '""')}"`,
+            item.cantidadProducto,
+            item.precioUnitarioAplicado,
+            item.totalLineaBruto,
+            item.descuentoPorcentajeFactura,
+            item.descuentoMontoFactura,
+            item.totalFacturaNeto,
+          ];
+          csv += values.join(";") + "\n";
         });
 
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
         const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.setAttribute('href', url);
-        link.setAttribute('download', `reporte_ventas_diarias_detallado_${new Date().toLocaleDateString().replace(/\//g, '-')}.csv`);
-        link.style.visibility = 'hidden';
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute(
+          "download",
+          `reporte_ventas_diarias_detallado_${new Date()
+            .toLocaleDateString()
+            .replace(/\//g, "-")}.csv`
+        );
+        link.style.visibility = "hidden";
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
-        alert('Reporte diario detallado generado y descargado exitosamente!');
-    }
+        alert("Reporte diario detallado generado y descargado exitosamente!");
+      }
 
-    function clearDailySales() {
-        if (confirm('¿Estás seguro de que quieres borrar TODOS los datos de ventas diarias acumulados? Esta acción no se puede deshacer.')) {
-            dailySales = [];
-            saveDailySales();
-            alert('Datos de ventas diarias borrados.');
+      function clearDailySales() {
+        if (
+          confirm(
+            "¿Estás seguro de que quieres borrar TODOS los datos de ventas diarias acumulados? Esta acción no se puede deshacer."
+          )
+        ) {
+          dailySales = [];
+          saveDailySales();
+          alert("Datos de ventas diarias borrados.");
         }
-    }
+      }
 
-    // Event listeners para los botones de reporte
-    document.getElementById('generateDailyReportBtn').addEventListener('click', generateCSV);
-    document.getElementById('clearDailySalesBtn').addEventListener('click', clearDailySales);
+      // Event listeners para los botones de reporte
+      document
+        .getElementById("generateDailyReportBtn")
+        .addEventListener("click", generateCSV);
+      document
+        .getElementById("clearDailySalesBtn")
+        .addEventListener("click", clearDailySales);
 
-    // Cargar las ventas diarias al iniciar la aplicación
-    loadDailySales();
-  </script>
-</body>
+      // Cargar las ventas diarias al iniciar la aplicación
+      loadDailySales();
+    </script>
+  </body>
 </html>
