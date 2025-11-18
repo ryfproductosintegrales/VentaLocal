@@ -733,7 +733,7 @@
       function addToDailySales(cartItems, invoiceDetails) {
         cartItems.forEach((item) => {
           const precioVenta =
-            item.cantidad >= 6 ? item.precioMayor : item.precioDetalle;
+            item.cantidad >= 5 ? item.precioMayor : item.precioDetalle;
           const totalLineaBruto = precioVenta * item.cantidad;
           dailySales.push({
             fecha: invoiceDetails.fecha,
@@ -779,7 +779,7 @@
           let totalItemsInCart = 0;
           cart.forEach((item, i) => {
             const precio =
-              item.cantidad >= 5 ? item.precioMayor : item.precioDetalle;
+              item.cantidad >= 6 ? item.precioMayor : item.precioDetalle;
             const total = precio * item.cantidad;
             totalItemsInCart += item.cantidad;
             const row = document.createElement("tr");
@@ -883,7 +883,7 @@
         let subtotal = 0;
         cart.forEach((item) => {
           const precio =
-            item.cantidad >= 5 ? item.precioMayor : item.precioDetalle;
+            item.cantidad >= 6 ? item.precioMayor : item.precioDetalle;
           subtotal += precio * item.cantidad;
         });
         const discount =
