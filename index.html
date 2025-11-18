@@ -733,7 +733,7 @@
       function addToDailySales(cartItems, invoiceDetails) {
         cartItems.forEach((item) => {
           const precioVenta =
-            item.cantidad >= 5 ? item.precioMayor : item.precioDetalle;
+            item.cantidad >= 6 ? item.precioMayor : item.precioDetalle;
           const totalLineaBruto = precioVenta * item.cantidad;
           dailySales.push({
             fecha: invoiceDetails.fecha,
