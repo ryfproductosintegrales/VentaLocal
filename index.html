@@ -230,6 +230,17 @@
             value="0"
           />
         </div>
+        <div class="flex justify-between mb-2">
+          <span>Envío ($):</span
+          ><input
+            type="number"
+            id="shippingInput"
+            class="quantity-input"
+            min="0"
+            step="0.01"
+            value="0"
+          />
+        </div>
         <div class="flex justify-between mb-4 text-lg font-bold">
           <span>Total a Pagar:</span><span id="total">$0.00</span>
         </div>
@@ -312,18 +323,18 @@
         { name: "Aceite de Batana", precioDetalle: 1200, precioMayor: 1050 },
         {
           name: "Aceite de coco (8 onzas)",
-          precioDetalle: 350,
-          precioMayor: 280,
+          precioDetalle: 400,
+          precioMayor: 320,
         },
         {
           name: "Aceite de coco medio galon",
-          precioDetalle: 1700,
-          precioMayor: 1500,
+          precioDetalle: 1200,
+          precioMayor: 1020,
         },
         {
           name: "Aceite de coco galon",
-          precioDetalle: 2700,
-          precioMayor: 2500,
+          precioDetalle: 1900,
+          precioMayor: 1710,
         },
         {
           name: "Aceite de copaiba (1 onza)",
@@ -344,11 +355,6 @@
           name: "Aceite de Ricino (4 oz)",
           precioDetalle: 300,
           precioMayor: 240,
-        },
-         {
-          name: "Aceite de Ricino (1/2 gl.)",
-          precioDetalle: 1500,
-          precioMayor: 000,
         },
         {
           name: "Aceites Esenciales (10 ml)",
@@ -381,14 +387,14 @@
         { name: "Ashwagandha (60 cap)", precioDetalle: 600, precioMayor: 480 },
         {
           name: "Ayurcolon (3,25 onzas)",
-          precioDetalle: 350,
-          precioMayor: 2800,
+          precioDetalle: 400,
+          precioMayor: 320,
         },
         { name: "Ayurfibra (1 onza)", precioDetalle: 500, precioMayor: 400 },
         {
           name: "Ayurmona (90 cápsulas)",
-          precioDetalle: 500,
-          precioMayor: 400,
+          precioDetalle: 600,
+          precioMayor: 480,
         },
         { name: "Barro (16 onzas)", precioDetalle: 200, precioMayor: 160 },
         { name: "Broncovedi (4 onzas)", precioDetalle: 300, precioMayor: 240 },
@@ -410,10 +416,10 @@
         },
         {
           name: "Cardo mariano (2 onzas)",
-          precioDetalle: 200,
-          precioMayor: 150,
+          precioDetalle: 250,
+          precioMayor: 200,
         },
-        { name: "Cecropia (2 onzas)", precioDetalle: 150, precioMayor: 100 },
+        { name: "Cecropia (2 onzas)", precioDetalle: 200, precioMayor: 160 },
         {
           name: "Chanca Piedra (60 capsulas)",
           precioDetalle: 600,
@@ -446,8 +452,8 @@
         },
         {
           name: "Crema Relajante Relabir (75 grs.)",
-          precioDetalle: 300,
-          precioMayor: 240,
+          precioDetalle: 350,
+          precioMayor: 280,
         },
         { name: "Cristal Ionteracare", precioDetalle: 930, precioMayor: 744 },
         {
@@ -471,12 +477,7 @@
         {
           name: "Diente de león (2 onzas)",
           precioDetalle: 250,
-          precioMayor: 000,
-        },
-        {
-          name: "Diente de león (5.6 onzas)",
-          precioDetalle: 500,
-          precioMayor: 000,
+          precioMayor: 200,
         },
         {
           name: "Dióxido de cloro (CDS) (3000 ppm) 8 onz",
@@ -496,8 +497,8 @@
         },
         {
           name: "Flor de Jamaica (3 onzas)",
-          precioDetalle: 150,
-          precioMayor: 100,
+          precioDetalle: 200,
+          precioMayor: 160,
         },
         {
           name: "Flor de Jamaica (6 onzas)",
@@ -506,7 +507,7 @@
         },
         {
           name: "Flores de Lavanda (2 oz)",
-          precioDetalle: 200,
+          precioDetalle: 250,
           precioMayor: 200,
         },
         {
@@ -546,8 +547,8 @@
         },
         {
           name: "Hojas de zapote blanco (2 onzas)",
-          precioDetalle: 150,
-          precioMayor: 100,
+          precioDetalle: 200,
+          precioMayor: 160,
         },
         { name: "IonTeraCare", precioDetalle: 8200, precioMayor: 7380 },
         {
@@ -556,9 +557,6 @@
           precioMayor: 450,
         },
         { name: "Jenjibre (3.5 onzas)", precioDetalle: 200, precioMayor: 160 },
-        { name: "Jiao Gu Lan (60 gr.)", precioDetalle: 500, precioMayor: 400 },
-
-        
         { name: "Kelp (90 capsulas)", precioDetalle: 500, precioMayor: 400 },
         {
           name: "Levadura nutricional (5 onzas)",
@@ -566,41 +564,45 @@
           precioMayor: 320,
         },
         {
-          name: "Levadura de Cerveza Comprimidos  (150 g.)",
-          precioDetalle: 600,
-          precioMayor: 500,
-        },
-        {
           name: "Levitron (juego interactivo magnetico)",
           precioDetalle: 800,
           precioMayor: 640,
         },
-        { name: "Licorice (2 onzas)", precioDetalle: 200, precioMayor: 150 },
+        { name: "Licorice (2 onzas)", precioDetalle: 250, precioMayor: 200 },
         { name: "Maca (90 cápsulas)", precioDetalle: 500, precioMayor: 400 },
         {
           name: "Maca en Polvo (3.5 onzas)",
-          precioDetalle: 300,
-          precioMayor: 220,
+          precioDetalle: 400,
+          precioMayor: 320,
         },
         {
           name: "Macadamia Nueces (227 gramos) (1/2 lb)",
           precioDetalle: 300,
           precioMayor: 240,
         },
-       
+        {
+          name: "Miel de Abeja (en panal)",
+          precioDetalle: 500,
+          precioMayor: 400,
+        },
+        {
+          name: "Moringa Frasco (90 cápsulas)",
+          precioDetalle: 450,
+          precioMayor: 360,
+        },
         {
           name: "Moringa Polvo (3.5 onzas)",
           precioDetalle: 200,
           precioMayor: 160,
         },
-        { name: "Parasitos (4 onzas)", precioDetalle: 350, precioMayor: 250 },
+        { name: "Parasitos (4 onzas)", precioDetalle: 400, precioMayor: 320 },
         { name: "Parche Ionteracare", precioDetalle: 1900, precioMayor: 1710 },
         {
           name: "Pasiflora en Polvo (2 oz)",
           precioDetalle: 250,
           precioMayor: 200,
         },
-        { name: "Pau de Arco (2 onzas)", precioDetalle: 200, precioMayor: 100 },
+        { name: "Pau de Arco (2 onzas)", precioDetalle: 300, precioMayor: 240 },
         {
           name: "Polen de Abeja Natural (5 onzas)",
           precioDetalle: 550,
@@ -608,8 +610,8 @@
         },
         {
           name: "Progesterona (90 cápsulas)",
-          precioDetalle: 500,
-          precioMayor: 400,
+          precioDetalle: 600,
+          precioMayor: 510,
         },
         { name: "Propoleo", precioDetalle: 600, precioMayor: 510 },
         {
@@ -651,15 +653,15 @@
         },
         {
           name: "Té Matcha (sobre 150 gr.)",
-          precioDetalle: 1300,
-          precioMayor: 1000,
+          precioDetalle: 1500,
+          precioMayor: 1200,
         },
         {
           name: "Triple magnesio (100 cápsulas)",
           precioDetalle: 600,
           precioMayor: 480,
         },
-        { name: "Uña de gato (2 onzas)", precioDetalle: 200, precioMayor: 150 },
+        { name: "Uña de gato (2 onzas)", precioDetalle: 250, precioMayor: 200 },
         {
           name: "Valeriana y Pasiflora (60 cápsulas)",
           precioDetalle: 600,
@@ -667,12 +669,16 @@
         },
         {
           name: "Xanthin (60 capsulas)",
-          precioDetalle: 1900,
-          precioMayor: 1700,
+          precioDetalle: 1500,
+          precioMayor: 1200,
         },
         { name: "Yodo atómico (1 onza)", precioDetalle: 500, precioMayor: 400 },
-        { name: "Zeolita (90 cápsulas)", precioDetalle: 500, precioMayor: 400 },
-        { name: "Generador Desinfectante", precioDetalle: 500, precioMayor: 400 },
+        { name: "Zeolita (90 cápsulas)", precioDetalle: 600, precioMayor: 480 },
+        {
+          name: "Generador Desinfectante",
+          precioDetalle: 500,
+          precioMayor: 400,
+        },
       ];
 
       const productList = document.getElementById("productList");
@@ -779,7 +785,7 @@
           let totalItemsInCart = 0;
           cart.forEach((item, i) => {
             const precio =
-              item.cantidad >= 6 ? item.precioMayor : item.precioDetalle;
+              item.cantidad >= 5 ? item.precioMayor : item.precioDetalle;
             const total = precio * item.cantidad;
             totalItemsInCart += item.cantidad;
             const row = document.createElement("tr");
@@ -806,6 +812,10 @@
 
       document
         .getElementById("discountInput")
+        .addEventListener("input", calculateTotals);
+
+      document
+        .getElementById("shippingInput")
         .addEventListener("input", calculateTotals);
 
       document.getElementById("checkoutBtn").addEventListener("click", () => {
@@ -865,9 +875,10 @@
 
         window.print();
 
-        // Vaciar el carrito y resetear descuento después de la venta
+        // Vaciar el carrito y resetear descuento y envío después de la venta
         cart = [];
         document.getElementById("discountInput").value = 0;
+        document.getElementById("shippingInput").value = 0;
         renderCart();
         calculateTotals(); // Para asegurar que los totales se reinicien
       });
@@ -875,6 +886,7 @@
       document.getElementById("clearCartBtn").addEventListener("click", () => {
         cart = [];
         document.getElementById("discountInput").value = 0; // Reiniciar descuento
+        document.getElementById("shippingInput").value = 0; // Reiniciar envío
         renderCart();
         calculateTotals(); // Para asegurar que los totales se reinicien
       });
@@ -883,12 +895,14 @@
         let subtotal = 0;
         cart.forEach((item) => {
           const precio =
-            item.cantidad >= 6 ? item.precioMayor : item.precioDetalle;
+            item.cantidad >= 5 ? item.precioMayor : item.precioDetalle;
           subtotal += precio * item.cantidad;
         });
         const discount =
           parseFloat(document.getElementById("discountInput").value) || 0;
-        const total = subtotal - (subtotal * discount) / 100;
+        const shipping =
+          parseFloat(document.getElementById("shippingInput").value) || 0;
+        const total = subtotal - (subtotal * discount) / 100 + shipping;
         document.getElementById("subtotal").textContent = `$${subtotal.toFixed(
           2
         )}`;
